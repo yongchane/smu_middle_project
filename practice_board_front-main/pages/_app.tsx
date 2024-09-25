@@ -1,9 +1,22 @@
+// /pages/_app.tsx
 import { AppProps } from "next/app";
 import GlobalStyle from "../styles/GlobalStyle";
 import MainLayout from "../layout/MainLayout";
-import PageTransition from "../components/PageTransition/PageTransition";
+import { AuthProvider, useAuth } from "../context/AuthContext";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import Login from "./login";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+
+  // useEffect(() => {
+  //   if (!isAuthenticated && router.pathname !== "/auth/login") {
+  //     router.push("/auth/login");
+  //   }
+  // }, [isAuthenticated, router]);
+
   return (
     <div
       style={{
@@ -14,13 +27,24 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <GlobalStyle />
-      {/* <PageTransition> */}
+      {/* {!isAuthenticated && router.pathname !== "/auth/login" ? (
+        <div>로그인 중...</div>
+      ) : ( */}
       <MainLayout>
+        <Login />
         <Component {...pageProps} />
       </MainLayout>
-      {/* </PageTransition> */}
+      {/* )} */}
     </div>
   );
 }
 
-export default MyApp;
+function AppWrapper(props: AppProps) {
+  return (
+    <AuthProvider>
+      <MyApp {...props} />
+    </AuthProvider>
+  );
+}
+
+export default AppWrapper;
