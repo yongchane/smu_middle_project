@@ -2,20 +2,30 @@
 import { AppProps } from "next/app";
 import GlobalStyle from "../styles/GlobalStyle";
 import MainLayout from "../layout/MainLayout";
-import { AuthProvider, useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Login from "./login";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (!isAuthenticated && router.pathname !== "/auth/login") {
-  //     router.push("/auth/login");
-  //   }
-  // }, [isAuthenticated, router]);
+  useEffect(() => {
+    // 초기 로드 시 /login으로 리다이렉트
+    if (typeof window !== "undefined") {
+      const token = sessionStorage.getItem("token");
+      if (token) {
+        setIsLoggedIn(true); // 토큰이 있으면 로그인 상태로 설정
+      } else {
+        router.push("/login");
+      }
+    }
+  }, [router]);
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    router.push("/"); // 로그인 성공 후 메인 페이지로 리다이렉트
+  };
 
   return (
     <div
@@ -27,24 +37,15 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <GlobalStyle />
-      {/* {!isAuthenticated && router.pathname !== "/auth/login" ? (
-        <div>로그인 중...</div>
-      ) : ( */}
-      <MainLayout>
-        <Login />
-        <Component {...pageProps} />
-      </MainLayout>
-      {/* )} */}
+      {isLoggedIn ? (
+        <MainLayout>
+          <Component {...pageProps} />
+        </MainLayout>
+      ) : (
+        <Login onSuccess={handleLoginSuccess} /> // onSuccess prop 전달
+      )}
     </div>
   );
 }
 
-function AppWrapper(props: AppProps) {
-  return (
-    <AuthProvider>
-      <MyApp {...props} />
-    </AuthProvider>
-  );
-}
-
-export default AppWrapper;
+export default MyApp;
