@@ -32,7 +32,7 @@ const Login = () => {
       .then((data) => {
         sessionStorage.setItem("token", data.accessToken); // accessToken 저장
         alert("로그인 성공!");
-        router.push(`/main?token=${data.accessToken}`); // token과 함께 Main 페이지로 이동
+        router.push(`/main/${data.accessToken}`); // 동적 라우팅에 맞게 수정
       })
       .catch((error) => {
         console.error("오류가 발생했습니다!!!!", error);
