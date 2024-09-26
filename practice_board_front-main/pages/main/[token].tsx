@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
 
 interface Board {
   id: number;
@@ -59,6 +60,7 @@ export default function MainContent() {
 
   return (
     <MainListContainer>
+      <Header token={token} />
       {boards.map((board) => (
         <MainBox
           key={board.id}

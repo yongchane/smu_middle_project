@@ -6,7 +6,13 @@ import ReadingGlasses from "../assets/header/ReadingGlasses.svg";
 import VericalDot from "../assets/header/VerticalDots.svg";
 import Back from "../assets/header/Back.svg";
 import GoBack from "../assets/header/GoBack.svg";
-const Header = () => {
+import Link from "next/link";
+
+interface FooterProps {
+  token: string | undefined; // Type for token prop, can be a string or undefined
+}
+
+const Header: React.FC<FooterProps> = ({ token }) => {
   const router = useRouter();
   const ShowBack = router.pathname === "/content";
   const Home = router.pathname === "/";
@@ -23,9 +29,11 @@ const Header = () => {
         <HeadersubItem>상명대 천안캠</HeadersubItem>
       </HeaderItem>
       <HeaderBt>
-        <HeaderRG onClick={() => router.push("/search")}>
-          <ReadingGlasses />
-        </HeaderRG>
+        <Link href={`/search?token=${token}`}>
+          <HeaderRG>
+            <ReadingGlasses />
+          </HeaderRG>
+        </Link>
         <HeaderVD onClick={() => router.push("/menu")}>
           <VericalDot />
         </HeaderVD>
