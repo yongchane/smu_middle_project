@@ -47,6 +47,7 @@ export default function MainContent() {
           console.error("오류가 발생했습니다!!!!", error);
           alert("게시물 로드에 실패했습니다.");
         });
+      console.log(token);
     }
   }, [token]);
 
