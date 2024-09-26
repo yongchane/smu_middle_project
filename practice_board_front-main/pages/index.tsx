@@ -1,15 +1,12 @@
-// /pages/login.tsx
 import { SyntheticEvent, useState } from "react";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 import Link from "next/link";
 
-interface LoginProps {
-  onSuccess: () => void; // onSuccess prop의 타입 정의
-}
-
-const Login: React.FC<LoginProps> = ({ onSuccess }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleClick = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -33,11 +30,13 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
         }
       })
       .then((data) => {
-        sessionStorage.setItem("token", data.accessToken);
-        onSuccess(); // 로그인 성공 시 onSuccess 호출
+        sessionStorage.setItem("token", data.accessToken); // accessToken 저장
+        alert("로그인 성공!");
+        router.push(`/main?token=${data.accessToken}`); // token과 함께 Main 페이지로 이동
       })
       .catch((error) => {
         console.error("오류가 발생했습니다!!!!", error);
+        alert("로그인에 실패했습니다.");
       });
   };
 
@@ -59,7 +58,6 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
         />
         <LoginBtn onClick={handleClick}>로그인</LoginBtn>
       </LoginContainer>
-      {/* SignUp 페이지로 이동하는 링크 추가 */}
       <LogInSignUp>
         <Link href="/signup">회원가입</Link>
       </LogInSignUp>
@@ -112,6 +110,7 @@ const LoginBtn = styled.button`
     background-color: #005bb5;
   }
 `;
+
 const LogInSignUp = styled.div`
   font-size: 10px;
 `;
