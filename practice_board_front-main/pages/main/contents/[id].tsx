@@ -63,15 +63,41 @@ export default function BoardDetail() {
   }
 
   return (
-    <BoardContainer>
-      <h1>{board.title}</h1>
-      <p>{board.content}</p>
-      <p>작성자: {board.user?.nickname || "알 수 없음"}</p>{" "}
-      {/* nickname이 없을 경우 "알 수 없음" 표시 */}
-    </BoardContainer>
+    <Container>
+      <Title>{board.title}</Title>
+      <Content>{board.content}</Content>
+      <Detail>
+        <CreatedDate>
+          작성자: {board.user?.nickname || "알 수 없음"}
+        </CreatedDate>
+      </Detail>
+    </Container>
   );
 }
 
 const BoardContainer = styled.div`
   padding: 20px;
 `;
+const Container = styled.div`
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+`;
+
+const Title = styled.h1`
+  font-size: 24px;
+  margin-bottom: 10px;
+`;
+
+const Content = styled.p`
+  font-size: 18px;
+  margin-bottom: 20px;
+`;
+
+const Detail = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #666;
+`;
+const CreatedDate = styled.div``;
