@@ -14,7 +14,7 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <HeaderBack onClick={() => router.push("/")}>
+      <HeaderBack onClick={() => router.back()}>
         {ShowBack ? <Back /> : !Home && <GoBack />}
       </HeaderBack>
 

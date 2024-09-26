@@ -56,7 +56,9 @@ export default function MainContent() {
       {boards.map((board) => (
         <MainBox
           key={board.id}
-          onClick={() => router.push(`/contents/${board.id}?token=${token}`)} // token과 함께 navigate
+          onClick={() =>
+            router.push(`/main/contents/${board.id}?token=${token}`)
+          } // token과 함께 navigate
         >
           <MainContainerLine>
             <MainTitle>{board.title}</MainTitle>
