@@ -13,29 +13,37 @@ export default function Write() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // 기본 폼 제출 동작 방지
-    const opts = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`, // Bearer 토큰을 사용하여 인증
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: title,
-        content: content,
-      }),
-    };
-    fetch("https://kscold.store/api/boards", opts)
-      .then((resp) => {
-        if (resp.ok) {
-          return resp.json();
-        } else {
-          throw new Error("게시물 작성 실패");
-        }
-      })
-      .catch((error) => {
-        console.error("오류가 발생했습니다!!!!", error);
-        alert("로그인에 실패했습니다.");
+    if (!token) {
+      alert("토큰이 유효하지 않습니다. 로그인 페이지로 이동합니다.");
+      router.push("/login"); // 토큰이 없을 경우 로그인 페이지로 리다이렉트
+      return;
+    }
+    try {
+      const response = await fetch("https://kscold.store/api/boards", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // Bearer 토큰을 사용하여 인증
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: title, // 제목 데이터
+          content: content, // 내용 데이터
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error("게시물 작성에 실패했습니다.");
+      }
+
+      const data = await response.json();
+      console.log("게시물 작성 성공:", data);
+
+      // 게시물 작성 후, 메인 페이지로 이동
+      router.push(`/main/${token}`);
+    } catch (error) {
+      console.error("오류 발생:", error);
+      alert("게시물 작성에 실패했습니다.");
+    }
   };
 
   return (
