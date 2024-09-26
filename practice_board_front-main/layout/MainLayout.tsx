@@ -35,6 +35,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {showSearchHeader ? <SearchHeader /> : !hideHeader ? <Header /> : null}
 
         <Main>{children}</Main>
+        {/* <Footer /> */}
         {/* {hideFooter ? <Footer /> : !commentFooter && <CommentFooter />} */}
         {/* // : !commentFooter && <CommentFooter /> */}
       </PageTransition>

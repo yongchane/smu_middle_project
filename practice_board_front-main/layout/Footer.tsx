@@ -1,17 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-
 import Pencil from "../assets/footer/Pencil.svg";
 import Link from "next/link";
 
-const Footer = () => {
+interface FooterProps {
+  token: string | undefined; // Type for token prop, can be a string or undefined
+}
+
+const Footer: React.FC<FooterProps> = ({ token }) => {
   const router = useRouter();
 
-  const isActive = (path: string) => router.pathname.startsWith(path);
-
   return (
-    <Link href="/write">
+    <Link href={`/write?token=${token}`} passHref>
       <FooterContainer>
         <FooterItem>
           <FooterItemContent>
@@ -31,7 +32,6 @@ export default Footer;
 const FooterContainer = styled.div`
   position: sticky;
   bottom: 30px;
-
   width: 100%;
   height: 40%;
   background: rgba(128, 128, 128, 0); /* 배경 투명도 조절 */
@@ -47,10 +47,10 @@ const FooterItem = styled.div`
   background-color: #f5f9fa;
   width: 120px;
   height: 40px;
-
-  /* padding-top: 9px; */
 `;
+
 const FooterIcon = styled.div``;
+
 const FooterItemContent = styled.div`
   display: flex;
   justify-content: center;
@@ -60,8 +60,3 @@ const FooterItemContent = styled.div`
   font-weight: 700;
   color: #484d4f;
 `;
-// const FooterItemTitle = styled.div<{ active: boolean }>`
-//   font-size: 12px;
-//   color: ${({ active }) => (active ? "#000" : "#888")};
-//   margin-top: 5px;
-// `;

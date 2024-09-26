@@ -8,7 +8,7 @@ export default function Write() {
   const [title, setTitle] = useState(""); // 제목 상태
   const [content, setContent] = useState(""); // 내용 상태
   const router = useRouter();
-
+  const { token } = router.query;
   // 폼 제출 처리 함수
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // 기본 폼 제출 동작 방지
@@ -27,6 +27,7 @@ export default function Write() {
         alert("게시글이 성공적으로 작성되었습니다.");
         setTitle(""); // 제목 초기화
         setContent(""); // 내용 초기화
+        router.push(`/main?token=${token}`); // 게시글 작성 후 목록으로 돌아가기
       }
     } catch (error) {
       console.error("게시글 작성 중 오류 발생:", error);
