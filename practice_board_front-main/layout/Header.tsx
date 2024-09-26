@@ -20,7 +20,7 @@ const Header: React.FC<FooterProps> = ({ token }) => {
 
   return (
     <HeaderContainer>
-      <HeaderBack onClick={() => router.back()}>
+      <HeaderBack onClick={() => router.push(`/main/${token}`)}>
         {ShowBack ? <Back /> : !Home && <GoBack />}
       </HeaderBack>
 
@@ -34,7 +34,7 @@ const Header: React.FC<FooterProps> = ({ token }) => {
             <ReadingGlasses />
           </HeaderRG>
         </Link>
-        <HeaderVD onClick={() => router.push("/menu")}>
+        <HeaderVD onClick={() => router.push(`/main/${token}`)}>
           <VericalDot />
         </HeaderVD>
       </HeaderBt>
