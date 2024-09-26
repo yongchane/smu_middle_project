@@ -1,7 +1,6 @@
-// /pages/main/contents/[id].tsx
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import Header from "../../../layout/Header";
 
 interface Board {
@@ -14,29 +13,36 @@ interface Board {
   };
 }
 
+interface Comment {
+  id: number;
+  comment: string;
+}
+
 export default function BoardDetail() {
   const router = useRouter();
-  const { id } = router.query; // 쿼리에서 id와 token 가져오기
-  const [board, setBoard] = useState<Board | null>(null); // 선택한 게시물 상태 관리
-  const [loading, setLoading] = useState(true); // 로딩 상태 관리
-  let { token } = router.query; // 쿼리에서 token 가져오기
+  const { id } = router.query;
+  const [board, setBoard] = useState<Board | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState("");
+  const [comments, setComments] = useState<Comment[]>([]);
+  let { token } = router.query;
 
   if (Array.isArray(token)) {
-    token = token[0]; // token이 배열인 경우 첫 번째 값 사용
+    token = token[0]; // Handle token as an array (if needed)
   }
+
   useEffect(() => {
     if (!token) {
-      router.push("/login"); // 토큰이 없으면 로그인 페이지로 리다이렉트
+      router.push("/login");
       return;
     }
 
     if (id) {
-      // id가 있을 경우 게시물 요청
-      setLoading(true); // 로딩 시작
+      setLoading(true);
       fetch(`https://kscold.store/api/boards/${id}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`, // Bearer 토큰을 사용하여 인증
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       })
@@ -48,23 +54,64 @@ export default function BoardDetail() {
           }
         })
         .then((data) => {
-          setBoard(data); // 받아온 게시물 데이터를 상태에 저장
-          setLoading(false); // 로딩 종료
+          setBoard(data);
+          setComments(data.comments || []); // Assuming comments are in the board data
+          setLoading(false);
         })
         .catch((error) => {
           console.error("오류가 발생했습니다!!!!", error);
           alert("게시물 로드에 실패했습니다.");
-          setLoading(false); // 로딩 종료
+          setLoading(false);
         });
     }
-  }, [id, token]); // 의존성 배열에 id와 token 추가
+  }, [id, token]);
+
+  const handleClick = (e: SyntheticEvent) => {
+    e.preventDefault();
+
+    if (!content.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    const opts = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: content, // Assuming the API expects 'content'
+      }),
+    };
+
+    fetch(`https://kscold.store/api/boards/${id}/comments`, opts)
+      .then((resp) => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          return resp.json().then((data) => {
+            throw new Error(data.message || "댓글 작성 실패");
+          });
+        }
+      })
+      .then((newComment) => {
+        // Update comments with the new comment
+        setComments([...comments, newComment]);
+        setContent(""); // Clear the input field
+      })
+      .catch((error) => {
+        console.error("오류가 발생했습니다!!!!", error);
+        alert("댓글 작성 실패했습니다.");
+      });
+  };
 
   if (loading) {
-    return <div>로딩 중...</div>; // 게시물이 로드 중일 때 보여줄 내용
+    return <div>로딩 중...</div>;
   }
 
   if (!board) {
-    return <div>게시물을 찾을 수 없습니다.</div>; // 게시물이 없을 경우 처리
+    return <div>게시물을 찾을 수 없습니다.</div>;
   }
 
   return (
@@ -79,6 +126,34 @@ export default function BoardDetail() {
           </CreatedDate>
         </Detail>
       </Container>
+
+      {/* 댓글 리스트 */}
+      <CommentContainer>
+        {comments.length > 0
+          ? comments.map((comment) => (
+              <ContainerLine key={comment.id}>
+                <CommentDetail>
+                  <CommentUserContainer>
+                    <CommentUser>익명{comment.id}</CommentUser>
+                  </CommentUserContainer>
+                  <CommentDetailContent>{comment.comment}</CommentDetailContent>
+                </CommentDetail>
+              </ContainerLine>
+            ))
+          : "댓글이 없습니다."}
+      </CommentContainer>
+
+      {/* 댓글 작성란 */}
+      <InputCommentContainer>
+        <InputComment>
+          <InputBox
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="댓글을 입력하세요..."
+          />
+          <SubmitButton onClick={handleClick}>작성</SubmitButton>
+        </InputComment>
+      </InputCommentContainer>
     </>
   );
 }
@@ -86,6 +161,7 @@ export default function BoardDetail() {
 const BoardContainer = styled.div`
   padding: 20px;
 `;
+
 const Container = styled.div`
   padding: 20px;
   width: 100%;
@@ -108,4 +184,77 @@ const Detail = styled.div`
   font-size: 14px;
   color: #666;
 `;
+
 const CreatedDate = styled.div``;
+
+const CommentContainer = styled.div`
+  margin-top: 10px;
+  height: 300px;
+`;
+
+const CommentDetail = styled.div`
+  padding-top: 5px;
+  height: 100%;
+`;
+
+const CommentDetailContent = styled.div`
+  padding-top: 5px;
+  font-size: 18px;
+  font-weight: 300;
+  height: 50px;
+`;
+
+const CommentUserContainer = styled.div`
+  display: flex;
+  padding-top: 6px;
+  padding-bottom: 4px;
+`;
+
+const CommentUser = styled.div`
+  padding-top: 7px;
+  font-weight: 600;
+  padding-left: 9px;
+`;
+
+const ContainerLine = styled.div`
+  width: 100%;
+  height: 100px;
+  background: #f4f4f4;
+  margin: 5px auto;
+`;
+
+const InputCommentContainer = styled.div`
+  position: sticky;
+  display: flex;
+  bottom: 10px;
+  width: 100%;
+  z-index: 10;
+  padding: 10px;
+`;
+
+const InputComment = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  background-color: #ebedf0;
+  border-radius: 12px;
+  border: 1px solid #ebedf0;
+  margin: 2px;
+`;
+
+const InputBox = styled.input`
+  width: 100%;
+  border: none;
+  background: none;
+  outline: none;
+  padding: 10px;
+`;
+
+const SubmitButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+`;
