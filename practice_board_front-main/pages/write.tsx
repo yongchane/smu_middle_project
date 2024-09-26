@@ -10,29 +10,32 @@ export default function Write() {
   const router = useRouter();
   const { token } = router.query;
   // 폼 제출 처리 함수
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // 기본 폼 제출 동작 방지
-
-    try {
-      // API 라우트로 POST 요청을 보내서 게시글을 생성
-      const response = await axios.post("/api/createBoard", {
-        title,
-        content,
-        createdDate: new Date().toISOString(), // 현재 날짜와 시간
-        viewCount: 0,
-        likeCount: 0,
+    const opts = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`, // Bearer 토큰을 사용하여 인증
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        content: content,
+      }),
+    };
+    fetch("https://kscold.store/api/boards", opts)
+      .then((resp) => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          throw new Error("게시물 작성 실패");
+        }
+      })
+      .catch((error) => {
+        console.error("오류가 발생했습니다!!!!", error);
+        alert("로그인에 실패했습니다.");
       });
-
-      if (response.status === 201) {
-        alert("게시글이 성공적으로 작성되었습니다.");
-        setTitle(""); // 제목 초기화
-        setContent(""); // 내용 초기화
-        router.push(`/main?token=${token}`); // 게시글 작성 후 목록으로 돌아가기
-      }
-    } catch (error) {
-      console.error("게시글 작성 중 오류 발생:", error);
-      alert("게시글 작성에 실패했습니다.");
-    }
   };
 
   return (

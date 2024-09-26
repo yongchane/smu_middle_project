@@ -18,7 +18,12 @@ interface Board {
 
 export default function MainContent() {
   const router = useRouter();
-  const { token } = router.query; // 쿼리에서 token 가져오기
+  let { token } = router.query; // 쿼리에서 token 가져오기
+
+  if (Array.isArray(token)) {
+    token = token[0]; // token이 배열인 경우 첫 번째 값 사용
+  }
+
   const [boards, setBoards] = useState<Board[]>([]); // 게시물 상태 관리
 
   useEffect(() => {
