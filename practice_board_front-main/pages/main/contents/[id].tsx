@@ -2,6 +2,7 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import Header from "../../../layout/Header";
 
 interface Board {
   id: number;
@@ -15,10 +16,14 @@ interface Board {
 
 export default function BoardDetail() {
   const router = useRouter();
-  const { id, token } = router.query; // 쿼리에서 id와 token 가져오기
+  const { id } = router.query; // 쿼리에서 id와 token 가져오기
   const [board, setBoard] = useState<Board | null>(null); // 선택한 게시물 상태 관리
   const [loading, setLoading] = useState(true); // 로딩 상태 관리
+  let { token } = router.query; // 쿼리에서 token 가져오기
 
+  if (Array.isArray(token)) {
+    token = token[0]; // token이 배열인 경우 첫 번째 값 사용
+  }
   useEffect(() => {
     if (!token) {
       router.push("/login"); // 토큰이 없으면 로그인 페이지로 리다이렉트
@@ -63,15 +68,18 @@ export default function BoardDetail() {
   }
 
   return (
-    <Container>
-      <Title>{board.title}</Title>
-      <Content>{board.content}</Content>
-      <Detail>
-        <CreatedDate>
-          작성자: {board.user?.nickname || "알 수 없음"}
-        </CreatedDate>
-      </Detail>
-    </Container>
+    <>
+      <Header token={token} />
+      <Container>
+        <Title>{board.title}</Title>
+        <Content>{board.content}</Content>
+        <Detail>
+          <CreatedDate>
+            작성자: {board.user?.nickname || "알 수 없음"}
+          </CreatedDate>
+        </Detail>
+      </Container>
+    </>
   );
 }
 
