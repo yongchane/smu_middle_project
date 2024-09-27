@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { SyntheticEvent, useEffect, useState } from "react";
 import Header from "../../../layout/Header";
-
+import Send from "../../../assets/footer/send.svg";
 interface Board {
   id: number;
   title: string;
@@ -153,6 +153,7 @@ export default function BoardDetail() {
         {comments.length > 0
           ? comments.map((comment) => (
               <ContainerLine key={comment.id}>
+                <SubContainerLine />
                 <CommentDetail>
                   <CommentUserContainer>
                     <CommentUser>익명{comment.id}</CommentUser>
@@ -172,7 +173,9 @@ export default function BoardDetail() {
             onChange={(e) => setContent(e.target.value)}
             placeholder="댓글을 입력하세요..."
           />
-          <SubmitButton onClick={handleClick}>작성</SubmitButton>
+          <SubmitButton onClick={handleClick}>
+            <Send />
+          </SubmitButton>
         </InputComment>
       </InputCommentContainer>
     </ContentContainer>
@@ -183,6 +186,7 @@ export default function BoardDetail() {
 
 const ContentContainer = styled.div`
   height: 100vh; // 전체 뷰포트 높이를 기준으로 설정
+  width: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -215,7 +219,7 @@ const CreatedDate = styled.div``;
 const CommentContainer = styled.div`
   margin-top: 10px;
   width: 100%;
-  height: 300px; // 고정 높이 유지
+  height: 100%; // 고정 높이 유지
   overflow-y: auto; // 스크롤을 활성화하여 높이를 넘는 댓글은 스크롤 가능하도록 설정
   padding-right: 10px; // 스크롤바와 내용 간 여유 공간 추가
 `;
@@ -229,8 +233,8 @@ const CommentDetail = styled.div`
 
 const CommentDetailContent = styled.div`
   padding-top: 5px;
-  font-size: 18px;
-  font-weight: 300;
+  font-size: 15px;
+  font-weight: 400;
   height: 50px;
 `;
 
@@ -242,14 +246,16 @@ const CommentUserContainer = styled.div`
 
 const CommentUser = styled.div`
   padding-top: 7px;
-  font-weight: 600;
-  padding-left: 9px;
+  font-weight: 700;
+  font-size: 16px;
+  /* padding-left: 9px; */
 `;
 
 const ContainerLine = styled.div`
   width: 100%;
-  height: 100%;
+  height: 13%;
   margin: 5px auto;
+  padding-left: 20px;
 `;
 
 const InputCommentContainer = styled.div`
@@ -280,10 +286,17 @@ const InputBox = styled.input`
 `;
 
 const SubmitButton = styled.button`
-  background-color: #007bff;
+  background-color: #ebedf0;
   color: white;
   border: none;
   border-radius: 5px;
   padding: 10px 15px;
+  cursor: pointer;
+`;
+const SubContainerLine = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #f4f4f4;
+  margin: 5px auto 0 auto;
   cursor: pointer;
 `;
