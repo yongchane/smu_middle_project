@@ -12,7 +12,7 @@ interface MainLayoutProps {
   children: ReactNode;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, modal }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const router = useRouter();
 
   // 특정 경로에서는 Header와 Footer 렌더링 안 함
@@ -36,7 +36,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, modal }) => {
 
         <Main>
           {children}
-          {modal}
+          {/* {modal} */}
         </Main>
         {/* <Footer /> */}
         {/* {hideFooter ? <Footer /> : !commentFooter && <CommentFooter />} */}
