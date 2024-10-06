@@ -10,13 +10,52 @@ import Link from "next/link";
 
 interface FooterProps {
   token: string | undefined;
+  id: number;
 }
-const Header: React.FC<FooterProps> = ({ token }) => {
+
+const Header: React.FC<FooterProps> = ({ token, id }) => {
   const router = useRouter();
   const ShowBack = router.pathname === "/content";
   const Home = router.pathname === "/";
   const isContentsPage = router.pathname.startsWith("/main/contents");
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async () => {
+    // 게시글 ID 또는 토큰이 없으면 요청을 보내지 않도록 확인
+    if (!id) {
+      alert("유효한 게시글 ID가 없습니다.");
+      return;
+    }
+
+    if (!token) {
+      alert("유효한 토큰이 없습니다. 다시 로그인해 주세요.");
+      return;
+    }
+
+    if (!confirm("정말로 이 게시글을 삭제하시겠습니까?")) return;
+
+    try {
+      const response = await fetch(`https://kscold.store/api/boards/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.message || "게시글 삭제에 실패했습니다.");
+      }
+
+      const data = await response.json();
+      alert(data.message); // "게시글이 삭제되었습니다." 메시지 출력
+      router.push(`/main/${token}`); // 게시글 삭제 후 메인 페이지로 이동
+    } catch (error) {
+      console.error("오류 발생:", error);
+      alert("게시글 삭제 중 오류가 발생했습니다.");
+    }
+  };
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -48,22 +87,20 @@ const Header: React.FC<FooterProps> = ({ token }) => {
         </Link>
 
         {isContentsPage ? (
-          <>
-            <HeaderVD onClick={toggleDropdown}>
-              <VericalDot />
-              {isOpen && (
-                <SearchDropMenu>
-                  <SeachDropItem onClick={() => handleOptionClick()}>
-                    랭킹순
-                  </SeachDropItem>
-                  <SeachLine />
-                  <SeachDropItem onClick={() => handleOptionClick()}>
-                    인기순
-                  </SeachDropItem>
-                </SearchDropMenu>
-              )}
-            </HeaderVD>
-          </>
+          <HeaderVD onClick={toggleDropdown}>
+            <VericalDot />
+            {isOpen && (
+              <SearchDropMenu>
+                <SeachDropItem onClick={() => handleOptionClick()}>
+                  수정
+                </SeachDropItem>
+                <SeachLine />
+                <SeachDropItem onClick={() => handleDelete()}>
+                  삭제
+                </SeachDropItem>
+              </SearchDropMenu>
+            )}
+          </HeaderVD>
         ) : (
           <HeaderVD />
         )}

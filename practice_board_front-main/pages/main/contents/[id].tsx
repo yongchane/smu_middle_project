@@ -35,7 +35,6 @@ export default function BoardDetail() {
   // 게시물 및 댓글 데이터 불러오기
   const fetchBoardAndComments = async () => {
     try {
-      // 게시글
       setLoading(true);
       const boardResp = await fetch(`https://kscold.store/api/boards/${id}`, {
         method: "GET",
@@ -44,7 +43,6 @@ export default function BoardDetail() {
           "Content-Type": "application/json",
         },
       });
-      // 댓글 데이터
       const commentResp = await fetch(
         `https://kscold.store/api/boards/${id}/comments`,
         {
@@ -59,12 +57,11 @@ export default function BoardDetail() {
       if (!boardResp.ok || !commentResp.ok) {
         throw new Error("데이터를 불러오는 중 오류가 발생했습니다.");
       }
-      // json 파일 형태로 변환
       const boardData = await boardResp.json();
       const commentData = await commentResp.json();
 
       setBoard(boardData);
-      setComments(commentData); // 댓글 리스트 업데이트
+      setComments(commentData);
       setShocContent(boardData.content);
     } catch (error) {
       console.error("오류가 발생했습니다!!!!", error);
@@ -74,7 +71,6 @@ export default function BoardDetail() {
     }
   };
 
-  // 댓글 작성 후 데이터 업데이트
   const handleClick = async (e: SyntheticEvent) => {
     e.preventDefault();
 
@@ -104,12 +100,8 @@ export default function BoardDetail() {
       }
 
       const newComment = await resp.json();
-
-      // 댓글 작성 후 새로 불러오기
       setComments([...comments, newComment]);
-      setContent(""); // 댓글 입력란 초기화
-
-      // 작성 후에도 기존 댓글 유지
+      setContent("");
     } catch (error) {
       console.error("오류가 발생했습니다!!!!", error);
       alert("댓글 작성 실패했습니다.");
@@ -123,7 +115,7 @@ export default function BoardDetail() {
     }
 
     if (id) {
-      fetchBoardAndComments(); // 게시물 및 댓글 데이터 불러오기
+      fetchBoardAndComments();
     }
   }, [id, token]);
 
@@ -137,7 +129,7 @@ export default function BoardDetail() {
 
   return (
     <ContentContainer>
-      <Header token={token} />
+      <Header token={token} id={Number(id)} /> {/* id 값을 Header로 전달 */}
       <Container>
         <Title>{board.title}</Title>
         <Content>{board.content}</Content>
@@ -147,7 +139,6 @@ export default function BoardDetail() {
           </CreatedDate>
         </Detail>
       </Container>
-
       {/* 댓글 리스트 */}
       <CommentContainer>
         {comments.length > 0
@@ -164,7 +155,6 @@ export default function BoardDetail() {
             ))
           : "댓글이 없습니다."}
       </CommentContainer>
-
       {/* 댓글 작성란 */}
       <InputCommentContainer>
         <InputComment>
