@@ -1,43 +1,18 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import Footer from "./Footer";
-import Header from "./Header";
-import SearchHeader from "../components/SearchHeader";
-// import WriteHeader from "../components/WriteHeader";
+
 import PageTransition from "../components/PageTransition/PageTransition";
-import CommentFooter from "../components/CommentFooter";
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const router = useRouter();
-
-  // 특정 경로에서는 Header와 Footer 렌더링 안 함
-  const hideHeader =
-    router.pathname === "/search" ||
-    router.pathname === "/write" ||
-    router.pathname === "/" ||
-    router.pathname === "/signup";
-  const showSearchHeader = router.pathname === "/search";
-  const showWriteHeader = router.pathname === "/write";
-  const hideFooter = router.pathname === "/";
-  const commentFooter =
-    router.pathname === "/" ||
-    router.pathname === "/write" ||
-    router.pathname === "/search";
-
   return (
     <>
       <PageTransition>
-        {/* {showSearchHeader ? <SearchHeader /> : !hideHeader ? <Header /> : null} */}
-
         <Main>{children}</Main>
-        {/* <Footer /> */}
-        {/* {hideFooter ? <Footer /> : !commentFooter && <CommentFooter />} */}
-        {/* // : !commentFooter && <CommentFooter /> */}
       </PageTransition>
     </>
   );

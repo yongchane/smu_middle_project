@@ -16,16 +16,14 @@ const Header: React.FC<FooterProps> = ({ token }) => {
   const ShowBack = router.pathname === "/content";
   const Home = router.pathname === "/";
   const isContentsPage = router.pathname.startsWith("/main/contents");
-  const [isOpen, setIsOpen] = useState(true);
-  const [selectedOption, setSelectedOption] = useState("랭킹순");
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleOptionClick = (option: any) => {
-    setSelectedOption(option);
-    setIsOpen(true);
+  const handleOptionClick = () => {
+    setIsOpen(true); // 버튼 클릭하면 작은 창 나가지게 상태 유지
   };
 
   // 드롭다운 상태 관리
@@ -55,11 +53,11 @@ const Header: React.FC<FooterProps> = ({ token }) => {
               <VericalDot />
               {isOpen && (
                 <SearchDropMenu>
-                  <SeachDropItem onClick={() => handleOptionClick("랭킹순")}>
+                  <SeachDropItem onClick={() => handleOptionClick()}>
                     랭킹순
                   </SeachDropItem>
                   <SeachLine />
-                  <SeachDropItem onClick={() => handleOptionClick("인기순")}>
+                  <SeachDropItem onClick={() => handleOptionClick()}>
                     인기순
                   </SeachDropItem>
                 </SearchDropMenu>
