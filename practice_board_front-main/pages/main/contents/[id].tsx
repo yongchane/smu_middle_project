@@ -263,7 +263,7 @@ const InputCommentContainer = styled.div`
   display: flex;
   bottom: 0px;
   width: 100%;
-  z-index: 10;
+  /* z-index: 1; */
   padding: 10px;
 `;
 
