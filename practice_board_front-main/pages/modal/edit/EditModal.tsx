@@ -1,13 +1,18 @@
+import { useRouter } from "next/router";
 import React from "react";
 import styled from "styled-components";
 
-const EditModal = () => {
+interface EditModalProps {
+  token: string | undefined;
+}
+const EditModal: React.FC<EditModalProps> = ({ token }) => {
+  const router = useRouter();
   return (
     <ModalOverlay>
       <ModalContent>
         <h2>Edit Modal</h2>
         <p>내용을 수정할 수 있습니다.</p>
-        <button>닫기</button>
+        <button onClick={() => router.push(`/main/${token}`)}>닫기</button>
       </ModalContent>
     </ModalOverlay>
   );

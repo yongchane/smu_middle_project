@@ -18,6 +18,10 @@ const Header: React.FC<FooterProps> = ({ token }) => {
   const ShowBack = router.pathname === "/content";
   const Home = router.pathname === "/";
 
+  // '/main'에 정확히 일치하는지 여부와 '/main/contents/*' 경로 구분
+  const isMainPage = router.pathname === "/main";
+  const isContentsPage = router.pathname.startsWith("/main/contents");
+
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -37,14 +41,20 @@ const Header: React.FC<FooterProps> = ({ token }) => {
             <ReadingGlasses />
           </HeaderRG>
         </Link>
-        {/* 모달 열기 */}
-        <HeaderVD onClick={() => setIsModalOpen(true)}>
-          <VericalDot />
-        </HeaderVD>
+        {/* '/main'에서는 HeaderVD만 렌더링, '/main/contents/*'에서는 클릭 이벤트 포함 */}
+        {isMainPage ? (
+          <HeaderVD></HeaderVD>
+        ) : (
+          isContentsPage && (
+            <HeaderVD onClick={() => setIsModalOpen(true)}>
+              <VericalDot />
+            </HeaderVD>
+          )
+        )}
       </HeaderBt>
 
       {/* 모달이 열려 있을 때만 렌더링 */}
-      {isModalOpen && <EditModal />}
+      {isModalOpen && <EditModal token={token} />}
     </HeaderContainer>
   );
 };
@@ -74,8 +84,6 @@ const HeaderItem = styled.div`
   display: flex;
   padding-top: 12px;
   padding-left: 70px;
-  /* justify-content: center;
-  align-items: center; */
 `;
 
 const HeadersubItem = styled.div`
