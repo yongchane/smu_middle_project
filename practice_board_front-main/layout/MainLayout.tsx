@@ -10,9 +10,10 @@ import CommentFooter from "../components/CommentFooter";
 
 interface MainLayoutProps {
   children: ReactNode;
+  modal?: ReactNode; // modal 속성 추가
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children, modal }) => {
   const router = useRouter();
 
   // 특정 경로에서는 Header와 Footer 렌더링 안 함
@@ -36,7 +37,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
         <Main>
           {children}
-          {/* {modal} */}
+          {modal}
         </Main>
         {/* <Footer /> */}
         {/* {hideFooter ? <Footer /> : !commentFooter && <CommentFooter />} */}

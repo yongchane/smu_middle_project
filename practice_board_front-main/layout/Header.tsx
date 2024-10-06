@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 
@@ -7,16 +7,19 @@ import VericalDot from "../assets/header/VerticalDots.svg";
 import Back from "../assets/header/Back.svg";
 import GoBack from "../assets/header/GoBack.svg";
 import Link from "next/link";
+import EditModal from "../pages/modal/edit/EditModal"; // 모달 컴포넌트 가져오기
 
 interface FooterProps {
-  token: string | undefined; // Type for token prop, can be a string or undefined
+  token: string | undefined;
 }
 
 const Header: React.FC<FooterProps> = ({ token }) => {
   const router = useRouter();
   const ShowBack = router.pathname === "/content";
   const Home = router.pathname === "/";
-  //   const isActive = (path: string) => router.pathname.startsWith(path);
+
+  // 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <HeaderContainer>
@@ -34,10 +37,14 @@ const Header: React.FC<FooterProps> = ({ token }) => {
             <ReadingGlasses />
           </HeaderRG>
         </Link>
-        <HeaderVD onClick={() => router.push(`/main/${token}`)}>
+        {/* 모달 열기 */}
+        <HeaderVD onClick={() => setIsModalOpen(true)}>
           <VericalDot />
         </HeaderVD>
       </HeaderBt>
+
+      {/* 모달이 열려 있을 때만 렌더링 */}
+      {isModalOpen && <EditModal />}
     </HeaderContainer>
   );
 };
